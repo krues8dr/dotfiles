@@ -35,6 +35,8 @@ fi
   ###
   # Begin Custom Prompts
   ###
+  POWERLEVEL9K_BASIC_FOREGROUND=230
+
   POWERLEVEL9K_CUSTOM_BG_JOBS="kprompt_background_jobs"
   POWERLEVEL9K_CUSTOM_BG_JOBS_BACKGROUND="blue"
   POWERLEVEL9K_CUSTOM_BG_JOBS_FOREGROUND="white"
@@ -312,40 +314,48 @@ fi
   #
   # VCS_STATUS parameters are set by gitstatus plugin. See reference:
   # https://github.com/romkatv/gitstatus/blob/master/gitstatus.plugin.zsh.
+
+  POWERLEVEL9K_VCS_FOREGROUND_COLOR=$POWERLEVEL9K_BASIC_FOREGROUND
+
   local vcs=''
+  local vcs_status=''
   # If on a branch...
-  vcs+='${${VCS_STATUS_LOCAL_BRANCH:+%76F'${(g::)POWERLEVEL9K_VCS_BRANCH_ICON}
+  vcs+='${${VCS_STATUS_LOCAL_BRANCH:+'${(g::)POWERLEVEL9K_VCS_BRANCH_ICON}
   # If branch name is at most 32 characters long, show it in full.
   vcs+='${${${$(($#VCS_STATUS_LOCAL_BRANCH<=32)):#0}:+${VCS_STATUS_LOCAL_BRANCH//\%/%%}}'
   # If branch name is over 32 characters long, show the first 12 … the last 12.
-  vcs+=':-${VCS_STATUS_LOCAL_BRANCH[1,12]//\%/%%}%28F…%76F${VCS_STATUS_LOCAL_BRANCH[-12,-1]//\%/%%}}}'
+  vcs+=':-${VCS_STATUS_LOCAL_BRANCH[1,12]//\%/%%}…${VCS_STATUS_LOCAL_BRANCH[-12,-1]//\%/%%}}}'
   # '@72f5c8a' if not on a branch.
-  vcs+=':-%246F@%76F${VCS_STATUS_COMMIT[1,8]}}'
+  vcs+=':-@${VCS_STATUS_COMMIT[1,8]}}'
   # ':master' if the tracking branch name differs from local branch.
-  vcs+='${${VCS_STATUS_REMOTE_BRANCH:#$VCS_STATUS_LOCAL_BRANCH}:+%246F:%76F${VCS_STATUS_REMOTE_BRANCH//\%/%%}}'
+  vcs+='${${VCS_STATUS_REMOTE_BRANCH:#$VCS_STATUS_LOCAL_BRANCH}:+:${VCS_STATUS_REMOTE_BRANCH//\%/%%}}'
   # '#tag' if on a tag.
-  vcs+='${VCS_STATUS_TAG:+%246F#%76F${VCS_STATUS_TAG//\%/%%}}'
+  vcs+='${VCS_STATUS_TAG:+%246F#${VCS_STATUS_TAG//\%/%%}}'
+
   # ⇣42 if behind the remote.
-  vcs+='${${VCS_STATUS_COMMITS_BEHIND:#0}:+ %76F⇣${VCS_STATUS_COMMITS_BEHIND}}'
+  vcs_status+='${${VCS_STATUS_COMMITS_BEHIND:#0}:+⇣${VCS_STATUS_COMMITS_BEHIND}}'
   # ⇡42 if ahead of the remote; no leading space if also behind the remote: ⇣42⇡42.
   # If you want '⇣42 ⇡42' instead, replace '${${(M)VCS_STATUS_COMMITS_BEHIND:#0}:+ }' with ' '.
-  vcs+='${${VCS_STATUS_COMMITS_AHEAD:#0}:+${${(M)VCS_STATUS_COMMITS_BEHIND:#0}:+ }%76F⇡${VCS_STATUS_COMMITS_AHEAD}}'
+  vcs_status+='${${VCS_STATUS_COMMITS_AHEAD:#0}:+${${(M)VCS_STATUS_COMMITS_BEHIND:#0}:+ }⇡${VCS_STATUS_COMMITS_AHEAD}}'
   # *42 if have stashes.
-  vcs+='${${VCS_STATUS_STASHES:#0}:+ %76F*}'
+  vcs_status+='${${VCS_STATUS_STASHES:#0}:+*}'
   # 'merge' if the repo is in an unusual state.
-  vcs+='${VCS_STATUS_ACTION:+ %196F${VCS_STATUS_ACTION//\%/%%}}'
+  vcs_status+='${VCS_STATUS_ACTION:+${VCS_STATUS_ACTION//\%/%%}}'
   # ~42 if have merge conflicts.
-  vcs+='${${VCS_STATUS_NUM_CONFLICTED:#0}:+%196F~}'
+  vcs_status+='${${VCS_STATUS_NUM_CONFLICTED:#0}:+~}'
   # +42 if have staged changes.
-  vcs+='${${VCS_STATUS_NUM_STAGED:#0}:+ %178F+}'
+  vcs_status+='${${VCS_STATUS_NUM_STAGED:#0}:++}'
   # !42 if have unstaged changes.
-  vcs+='${${VCS_STATUS_NUM_UNSTAGED:#0}:+%178F!}'
+  vcs_status+='${${VCS_STATUS_NUM_UNSTAGED:#0}:+!}'
   # ?42 if have untracked files. It's really a question mark, your font isn't broken.
   # See POWERLEVEL9K_VCS_UNTRACKED_ICON below if you want to use a different icon.
   # Remove the next line if you don't want to see untracked files at all.
-  vcs+='${${VCS_STATUS_NUM_UNTRACKED:#0}:+%39F'${(g::)POWERLEVEL9K_VCS_UNTRACKED_ICON}'}'
+  vcs_status+='${${VCS_STATUS_NUM_UNTRACKED:#0}:+'${(g::)POWERLEVEL9K_VCS_UNTRACKED_ICON}'}'
+
+  [[ $vcs_status ]] && vcs+=' '$vcs_status
+
   # If P9K_CONTENT is not empty, leave it unchanged. It's either "loading" or from vcs_info.
-  vcs="\${P9K_CONTENT:-$vcs}"
+  vcs="\${P9K_CONTENT:-%${POWERLEVEL9K_VCS_FOREGROUND_COLOR}F$vcs%f}"
 
   # Disable the default Git status formatting.
   typeset -g POWERLEVEL9K_VCS_DISABLE_GITSTATUS_FORMATTING=true
@@ -357,7 +367,7 @@ fi
   typeset -g POWERLEVEL9K_VCS_{STAGED,UNSTAGED,UNTRACKED,CONFLICTED,COMMITS_AHEAD,COMMITS_BEHIND}_MAX_NUM=-1
 
   # Icon color.
-  typeset -g POWERLEVEL9K_VCS_VISUAL_IDENTIFIER_COLOR=76
+  typeset -g POWERLEVEL9K_VCS_VISUAL_IDENTIFIER_COLOR=${POWERLEVEL9K_VCS_FOREGROUND_COLOR}
   # Custom icon.
   typeset -g POWERLEVEL9K_VCS_VISUAL_IDENTIFIER_EXPANSION=
   # Custom prefix.
@@ -372,12 +382,12 @@ fi
   # These settings are used for respositories other than Git or when gitstatusd fails and
   # Powerlevel10k has to fall back to using vcs_info.
 
-  POWERLEVEL9K_VCS_CLEAN_FOREGROUND=195
-  POWERLEVEL9K_VCS_CLEAN_BACKGROUND=019
-  POWERLEVEL9K_VCS_UNTRACKED_FOREGROUND=195
-  POWERLEVEL9K_VCS_UNTRACKED_BACKGROUND=019
-  POWERLEVEL9K_VCS_MODIFIED_FOREGROUND=195
-  POWERLEVEL9K_VCS_MODIFIED_BACKGROUND=019
+  POWERLEVEL9K_VCS_CLEAN_FOREGROUND=${POWERLEVEL9K_VCS_FOREGROUND_COLOR}
+  POWERLEVEL9K_VCS_CLEAN_BACKGROUND=033
+  POWERLEVEL9K_VCS_UNTRACKED_FOREGROUND=${POWERLEVEL9K_VCS_FOREGROUND_COLOR}
+  POWERLEVEL9K_VCS_UNTRACKED_BACKGROUND=033
+  POWERLEVEL9K_VCS_MODIFIED_FOREGROUND=${POWERLEVEL9K_VCS_FOREGROUND_COLOR}
+  POWERLEVEL9K_VCS_MODIFIED_BACKGROUND=033
 
   # typeset -g POWERLEVEL9K_VCS_CLEAN_FOREGROUND=76
   # typeset -g POWERLEVEL9K_VCS_UNTRACKED_FOREGROUND=76
@@ -504,9 +514,13 @@ fi
   # Custom icon.
   # typeset -g POWERLEVEL9K_PYENV_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
+
+  typeset -g POWERLEVEL9K_NODE_FOREGROUND=$POWERLEVEL9K_BASIC_FOREGROUND
+  typeset -g POWERLEVEL9K_NODE_BACKGROUND=64
   ##########[ nodenv: node.js version from nodenv (https://github.com/nodenv/nodenv) ]##########
   # Nodenv color.
-  typeset -g POWERLEVEL9K_NODENV_FOREGROUND=70
+  typeset -g POWERLEVEL9K_NODENV_FOREGROUND=$POWERLEVEL9K_NODE_FOREGROUND
+  typeset -g POWERLEVEL9K_NODENV_BACKGROUND=$POWERLEVEL9K_NODE_BACKGROUND
   # Don't show node version if it's the same as global: $(nodenv version-name) == $(nodenv global).
   typeset -g POWERLEVEL9K_NODENV_PROMPT_ALWAYS_SHOW=false
   # Custom icon.
@@ -514,13 +528,15 @@ fi
 
   ##############[ nvm: node.js version from nvm (https://github.com/nvm-sh/nvm) ]###############
   # Nvm color.
-  typeset -g POWERLEVEL9K_NVM_FOREGROUND=70
+  typeset -g POWERLEVEL9K_NVM_FOREGROUND=$POWERLEVEL9K_NODE_FOREGROUND
+  typeset -g POWERLEVEL9K_NVM_BACKGROUND=$POWERLEVEL9K_NODE_BACKGROUND
   # Custom icon.
   # typeset -g POWERLEVEL9K_NVM_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
   ############[ nodeenv: node.js environment (https://github.com/ekalinin/nodeenv) ]############
   # Nodeenv color.
-  typeset -g POWERLEVEL9K_NODEENV_FOREGROUND=70
+  typeset -g POWERLEVEL9K_NODEENV_FOREGROUND=$POWERLEVEL9K_NODE_FOREGROUND
+  typeset -g POWERLEVEL9K_NODEENV_BACKGROUND=$POWERLEVEL9K_NODE_BACKGROUND
   # Don't show Node version next to the environment name.
   typeset -g POWERLEVEL9K_NODEENV_SHOW_NODE_VERSION=false
   # Separate environment name from Node version only with a space.
@@ -530,7 +546,8 @@ fi
 
   ##############################[ node_version: node.js version ]###############################
   # Node version color.
-  typeset -g POWERLEVEL9K_NODE_VERSION_FOREGROUND=70
+  typeset -g POWERLEVEL9K_NODE_VERSION_FOREGROUND=$POWERLEVEL9K_NODE_FOREGROUND
+  typeset -g POWERLEVEL9K_NODE_VERSION_BACKGROUND=$POWERLEVEL9K_NODE_BACKGROUND
   # Show node version only when in a directory tree containing package.json.
   typeset -g POWERLEVEL9K_NODE_VERSION_PROJECT_ONLY=true
   # Custom icon.
@@ -552,9 +569,13 @@ fi
   # Custom icon.
   # typeset -g POWERLEVEL9K_RUST_VERSION_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
+  typeset -g POWERLEVEL9K_RUBY_FOREGROUND=$POWERLEVEL9K_BASIC_FOREGROUND
+  typeset -g POWERLEVEL9K_RUBY_BACKGROUND=88
+
   #############[ rbenv: ruby version from rbenv (https://github.com/rbenv/rbenv) ]##############
   # Rbenv color.
-  typeset -g POWERLEVEL9K_RBENV_FOREGROUND=168
+  typeset -g POWERLEVEL9K_RBENV_FOREGROUND=$POWERLEVEL9K_RUBY_FOREGROUND
+  typeset -g POWERLEVEL9K_RBENV_BACKGROUND=$POWERLEVEL9K_RUBY_BACKGROUND
   # Don't show ruby version if it's the same as global: $(rbenv version-name) == $(rbenv global).
   typeset -g POWERLEVEL9K_RBENV_PROMPT_ALWAYS_SHOW=false
   # Custom icon.
@@ -562,7 +583,8 @@ fi
 
   #######################[ rvm: ruby version from rvm (https://rvm.io) ]########################
   # Rvm color.
-  typeset -g POWERLEVEL9K_RVM_FOREGROUND=168
+  typeset -g POWERLEVEL9K_RVM_FOREGROUND=$POWERLEVEL9K_RUBY_FOREGROUND
+  typeset -g POWERLEVEL9K_RVM_BACKGROUND=$POWERLEVEL9K_RUBY_BACKGROUND
   # Don't show @gemset at the end.
   typeset -g POWERLEVEL9K_RVM_SHOW_GEMSET=false
   # Don't show ruby- at the front.
