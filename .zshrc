@@ -101,3 +101,4 @@ bindkey "^[e" end-of-line
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
 
 setopt HUP
+export PATH="/usr/local/opt/gettext/bin:$PATH"
