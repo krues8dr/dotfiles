@@ -113,3 +113,36 @@ function serve() {
 function sdl () {
   ffmpeg -i $1 -c copy -bsf:a aac_adtstoasc $2.mp4
 }
+
+
+
+# work on a given project
+function wo() {
+  if [ -d ~/Projects/$1 ]; then
+    KWPATH=~/Projects/$1
+  elif [ -d ~/Projects/RPGMakerMV/$1 ]; then
+    KWPATH=~/Projects/RPGMakerMV/$1
+  elif [ -d ~/Sites/$1/http ]; then
+    KWPATH=~/Sites/$1/http
+  elif [ -d ~/Sites/$1 ]; then
+    KWPATH=~/Sites/$1
+  else
+    KWPATH=$(tac ~/.zsh_history | sed -n "/;cd *.*$1/{p;q}" | sed -re 's/.*;cd *(.*)/\1/')
+    KWPATH="${KWPATH/#\~/$HOME}"
+
+    if [ ! -d "$KWPATH" ]; then
+      return 1
+    fi
+  fi
+
+  echo "↳ $KWPATH"
+  cd "$KWPATH"
+
+  # If there's a project, let's use it
+  KFILE=($KWPATH/*.sublime-project)
+  if [ -f $KFILE ]; then
+    subl $KFILE
+  else
+    subl $KWPATH
+  fi
+}
