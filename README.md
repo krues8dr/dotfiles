@@ -1,4 +1,4 @@
-# Krues8dr's dotfiles
+# Krusynth's dotfiles
 
 This archive contains my system dotfiles.
 
