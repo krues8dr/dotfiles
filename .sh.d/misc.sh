@@ -12,3 +12,4 @@ eval "$(rbenv init -)"
 
 # Add our SSH keys.
 ssh-add -K ~/.ssh/github.dsa &>/dev/null
+ssh-add -K ~/.ssh/bhunt &>/dev/null

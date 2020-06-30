@@ -73,8 +73,8 @@ export PATH=/usr/local/opt/gnu-sed/libexec/gnubin:/opt/local/bin:/opt/local/sbin
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 
 export SH_DIR=$HOME/.sh.d
-source $SH_DIR/functions.sh
 source $SH_DIR/exports.sh
+source $SH_DIR/functions.sh
 source $SH_DIR/misc.sh
 source $SH_DIR/serve.sh
 source $SH_DIR/motd.sh
