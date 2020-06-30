@@ -31,11 +31,6 @@ cd -
 done
 }
 
-# Replacement for manpages
-function wo() {
-	bro $1 | sed -e 's/bro /wo /g'
-}
-
 function vault-update() {
 for i in $(knife data bag list); do
     for j in $(knife data bag show $i|grep _keys$|sed s/_keys$//); do

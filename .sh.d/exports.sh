@@ -10,11 +10,6 @@ export CATALINA_HOME=/Library/Tomcat/Home
 export ANDROID_HOME=~/android-sdk-macosx
 export PIP_DOWNLOAD_CACHE=/Users/krues8dr/.pip-cache
 
-
-# alias j.py; enable j.sh
-export JPY=~/.j/j.py
-. ~/.j/j.sh
-
 # MacPorts Installer addition on 2013-11-25_at_16:28:02: adding an appropriate PATH variable for use with MacPorts.
 export PATH=/opt/local/bin:/opt/local/sbin:$PATH
 # Finished adapting your PATH environment variable for use with MacPorts.
