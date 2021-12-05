@@ -101,7 +101,11 @@ function gitinfo() {
 # See serve.sh for the more advanced version of this.
 function serve() {
 	if [ -f "Gemfile" ]; then
-		jekyll serve --port 8000 --host 0.0.0.0 --incremental
+    if [ -f "bin/rails" ]; then
+       bin/rails s -p 8000
+    else
+		  JEKYLL_ENV=production jekyll serve --port 8000 --host 0.0.0.0 --incremental
+    fi
 	elif [ -f "package.json" ]; then
 		npm start
 	else
