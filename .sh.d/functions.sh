@@ -149,4 +149,81 @@ function wo() {
   else
     subl $KWPATH
   fi
+
+  open "$KWPATH"
 }
+
+function site() {
+  site=$1
+  shift
+
+  echo "$@"
+
+  opts=$@
+
+
+  if [ ! -d ~/Sites/$site ]; then
+    mkdir ~/Sites/$site
+  fi
+
+  cd ~/Sites/$site
+
+  if [[ ${opts[(i)npm]} -le ${#opts} ]]; then
+    echo "Init npm"
+    npm init --yes
+  fi
+
+  if [[ ${opts[(i)express]} -le ${#opts} ]]; then
+    echo "Adding Express"
+    mkdir server client
+    yarn add express express-session session-file-store dotenv uuid4 bootstrap jquery
+
+    cp -R ~/.site-skel/* ./client/
+  fi
+
+  if [[ ${opts[(i)angular]} -le ${#opts} ]]; then
+    echo "Adding Angular"
+    yarn add @uirouter/angularjs angular angular-sanitize
+  fi
+
+  if [[ ${opts[(i)jekyll]} -le ${#opts} ]]; then
+    echo "Setting up Jekyll"
+    jekyll new ./
+  fi
+
+  open ./
+  subl ./
+}
+
+function post() {
+  fulltime=$(date +%Y-%m-%d-T%H:%M:%S%z)
+  ymd=$(date +"%Y-%m-%d")
+  ymdtoo=$(date +"%Y/%m/%d")
+  name=$(echo $1 | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | tr A-Z a-z)
+  filename=_posts/${ymd}-${name}.md
+  url=/blog/${ymdtoo}/${name}/
+
+  echo Writing $filename
+  touch $filename
+
+  cat > $filename << EOM
+---
+title: "$1"
+author: Bill Hunt
+type: post
+date: $fulltime
+permalink: $url
+layout: post
+excerpt:
+
+---
+
+EOM
+
+  subl $filename
+
+  echo "http://localhost:8000$url"
+
+}
+
+alias yass="yarn sass"
