@@ -1,3 +1,5 @@
+# Disable Homebrew auto-update
+export HOMEBREW_NO_AUTO_UPDATE=1
 
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/.oh-my-zsh
