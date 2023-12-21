@@ -104,7 +104,7 @@ function serve() {
     if [ -f "bin/rails" ]; then
        bin/rails s -p 8000
     else
-		  JEKYLL_ENV=production jekyll serve --port 8000 --host 0.0.0.0 --incremental
+		  JEKYLL_ENV=production bundle exec jekyll serve --port 8000 --host 0.0.0.0 --incremental $1
     fi
 	elif [ -f "package.json" ]; then
 		npm start
@@ -226,4 +226,26 @@ EOM
 
 }
 
-alias yass="yarn sass"
+function recm() {
+  ymd=$(date +"%Y-%m-%d")
+  name=$(echo $1 | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | tr A-Z a-z)
+  filename=_recommended/${ymd}-${name}.md
+
+  echo Writing $filename
+  touch $filename
+
+  cat > $filename << EOM
+---
+title: "$1"
+date: $ymd
+link: $2
+category: Recommended
+---
+$3
+EOM
+
+  subl $filename
+}
+
+
+alias lh='exa -l -s modified --no-permissions --icons --no-user'
