@@ -1,5 +1,5 @@
 # Dotfiles alias
-alias dotfiles='/usr/local/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
 # Turn Spotlight On/Off
 alias sl_off='sudo mdutil -a -i off'
@@ -199,7 +199,7 @@ function post() {
   fulltime=$(date +%Y-%m-%d-T%H:%M:%S%z)
   ymd=$(date +"%Y-%m-%d")
   ymdtoo=$(date +"%Y/%m/%d")
-  name=$(echo $1 | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | tr A-Z a-z)
+  name=$(echo $1 | sed -r "s/[^a-zA-Z0-9]+/-/g" | sed -r "s/^-+\|-+$//g" | tr A-Z a-z)
   filename=_posts/${ymd}-${name}.md
   url=/blog/${ymdtoo}/${name}/
 
@@ -228,7 +228,7 @@ EOM
 
 function recm() {
   ymd=$(date +"%Y-%m-%d")
-  name=$(echo $1 | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | tr A-Z a-z)
+  name=$(echo $1 | sed -r "s/[^a-zA-Z0-9]+/-/g" | sed -r "s/^-+\|-+$//g" | tr A-Z a-z)
   filename=_recommended/${ymd}-${name}.md
 
   echo Writing $filename

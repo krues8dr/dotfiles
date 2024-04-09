@@ -4,6 +4,9 @@ export HOMEBREW_NO_AUTO_UPDATE=1
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/.oh-my-zsh
 
+# Start ssh-agent
+# eval "$(ssh-agent -s)"
+
 # Replacing Spaceship with Powerlevel10K
 # # Spaceship options
 # SPACESHIP_PROMPT_ADD_NEWLINE="true"
@@ -61,7 +64,7 @@ fpath=(/usr/local/share/zsh-completions $fpath)
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git svn gem osx brew python ruby rails django nvm)
+plugins=(ssh-agent git svn gem brew python ruby rails nvm)
 
 # Hide the trailing %
 # PROMPT_EOL_MARK=''  ### TODO
@@ -73,6 +76,8 @@ source $ZSH/oh-my-zsh.sh
 # Customize to your needs...
 export PATH=/usr/local/opt/gnu-sed/libexec/gnubin:/opt/local/bin:/opt/local/sbin:/Users/krues8dr/bin:/usr/local/bin:/usr/local/mysql/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:/usr/bin/ec2/bin
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+
+source /etc/profile.d/rvm.sh
 
 export SH_DIR=$HOME/.sh.d
 source $SH_DIR/exports.sh
